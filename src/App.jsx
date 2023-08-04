@@ -72,7 +72,7 @@ const App = () => {
 
   return (
     <div className="container">
-      <h1 className="my-4 text-center">Polynomial Lenskits</h1>
+      <h1 className="my-4 text-center">POS Data Preview</h1>
       <div className="d-flex justify-content-center align-items-start">
         <div className="col-md-6 mb-3 mx-2">
           <label htmlFor="reportType">Report type:</label>
