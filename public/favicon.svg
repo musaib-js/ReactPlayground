@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="256" height="256" viewBox="0 0 256 256">
+  <defs>
+    <clipPath id="clip-Polynomial_Logo_without_text">
+      <rect width="256" height="256"/>
+    </clipPath>
+  </defs>
+  <g id="Polynomial_Logo_without_text" data-name="Polynomial Logo without text" clip-path="url(#clip-Polynomial_Logo_without_text)">
+    <g id="Group_10957" data-name="Group 10957" transform="translate(-68 -61)">
+      <g id="Group_9556" data-name="Group 9556" transform="translate(68 125)">
+        <path id="Union_5" data-name="Union 5" d="M64,128V59.077H33.684V0H114a14,14,0,0,1,14,14V128ZM0,128V59.077H33.684V128Z" transform="translate(127.999)" fill="#1bbee9"/>
+        <path id="Union_6" data-name="Union 6" d="M0,128V60.953a1.89,1.89,0,0,1,.021-.282Q0,59.875,0,59.077A59.077,59.077,0,0,1,100.85,17.3,59.089,59.089,0,0,1,26.256,108.22V128ZM26.257,59.077a32.819,32.819,0,1,0,32.819-32.82A32.857,32.857,0,0,0,26.257,59.077Z" transform="translate(0 0)" fill="#f57e37"/>
+      </g>
+    </g>
+  </g>
+</svg>
