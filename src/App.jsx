@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Dropdown from './Dropdown';
 import Table from './Table';
 
@@ -20,7 +22,7 @@ const App = () => {
   const handleShowTable = async () => {
     try {
       if (!reportType || !pos) {
-        console.error('Please select Report type and POS.');
+        toast.error('Please select Report type and POS.');
         return;
       }
 
@@ -38,6 +40,7 @@ const App = () => {
       setTableData(response.data[0]?.Data || []);
       setShowTable(true);
     } catch (error) {
+      toast.error('Error fetching data from the API.');
       console.error('Error fetching data from the API.', error);
     }
   };
@@ -69,7 +72,7 @@ const App = () => {
 
   return (
     <div className="container">
-      <h1 className="my-4 text-center">Polynomial Lenskits </h1>
+      <h1 className="my-4 text-center">Dropdown API Table App</h1>
       <div className="d-flex justify-content-center align-items-start">
         <div className="col-md-6 mb-3 mx-2">
           <label htmlFor="reportType">Report type:</label>
@@ -90,9 +93,11 @@ const App = () => {
           </div>
         </div>
       )}
+
+      {/* Add ToastContainer to show toast messages */}
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
     </div>
   );
 };
 
 export default App;
-          
