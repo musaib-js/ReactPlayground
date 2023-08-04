@@ -33,7 +33,7 @@ const App = () => {
         {
           collection: reportType,
           user: user,
-          pos: pos,
+          POS: pos,
         }
       );
 
