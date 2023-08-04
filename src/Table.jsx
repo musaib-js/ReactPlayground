@@ -1,27 +1,32 @@
 import React from 'react';
 
 const Table = ({ data }) => {
-  return (
-      <table className="table table-striped table-responsive">
-            <thead>
-                    <tr>
-                              <th>ID</th>
-                                        <th>Name</th>
-                                                  <th>Email</th>
-                                                          </tr>
-                                                                </thead>
-                                                                      <tbody>
-                                                                              {data.map((item) => (
-                                                                                        <tr key={item.id}>
-                                                                                                    <td>{item.id}</td>
-                                                                                                                <td>{item.name}</td>
-                                                                                                                            <td>{item.email}</td>
-                                                                                                                                      </tr>
-                                                                                                                                              ))}
-                                                                                                                                                    </tbody>
-                                                                                                                                                        </table>
-                                                                                                                                                          );
-                                                                                                                                                          };
+  if (!data || data.length === 0) {
+    return <p>No data to display.</p>;
+  }
 
-                                                                                                                                                          export default Table;
-                                                                                                                                                          
+  const headers = Object.keys(data[0]);
+
+  return (
+    <table className="table table-striped table-responsive">
+      <thead>
+        <tr>
+          {headers.map((header, index) => (
+            <th key={index}>{header}</th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {data.map((item, rowIndex) => (
+          <tr key={rowIndex}>
+            {headers.map((header, colIndex) => (
+              <td key={colIndex}>{item[header]}</td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+};
+
+export default Table;
