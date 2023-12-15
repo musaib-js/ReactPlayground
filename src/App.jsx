@@ -4,9 +4,9 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Dropdown from "./Dropdown";
 import Modal from "react-bootstrap/Modal";
-import { Table } from "react-bootstrap";
-import 'react-tooltip/dist/react-tooltip.css'
-import { Tooltip } from 'react-tooltip'
+import { Table, Button } from "react-bootstrap";
+import "react-tooltip/dist/react-tooltip.css";
+import { Tooltip } from "react-tooltip";
 
 const App = () => {
   const [posList, setPosList] = useState([]);
@@ -19,6 +19,13 @@ const App = () => {
   const [data, setData] = useState([]);
   const [show, setShow] = useState(false);
   const [date, setDate] = useState("");
+  const [activeSection, setActiveSection] = useState(null);
+  const [isOlderFashion, setIsOlderFashion] = useState(true);
+
+  const handleSectionToggle = (section) => {
+    setActiveSection(section === activeSection ? null : section);
+  };
+
   const fetchData = async () => {
     try {
       const response = await axios.get(
@@ -50,6 +57,11 @@ const App = () => {
     setPos(event.target.value);
   };
 
+  useEffect(() => {
+    if (data) {
+      setIsOlderFashion(Array.isArray(data));
+    }
+  }, [data]);
   const handleShowTable = async () => {
     try {
       if (!reportType || !pos) {
@@ -79,12 +91,12 @@ const App = () => {
     { label: "Product", value: "product" },
     { label: "Sales", value: "sales" },
   ];
-
+  console.log("isOlderFashion", isOlderFashion);
   return (
     <div className="container">
       <h1 className="my-4 text-center">POS Data Preview</h1>
       <div className="d-flex justify-content-center align-items-start">
-      <div className="col-md-4 mb-3 mx-2">
+        <div className="col-md-4 mb-3 mx-2">
           <label htmlFor="user">Select a User:</label>
           <select
             className="form-select"
@@ -156,9 +168,14 @@ const App = () => {
                     <td>{data.user}</td>
                     <td>{data.report_name}</td>
                     <td
-                     data-bs-toggle="tooltip"
-                     data-bs-placement="top"
-                     title={data.Data.length === 0 ? "No data available" : "Click to view the data"}>
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="top"
+                      title={
+                        data.Data.length === 0
+                          ? "No data available"
+                          : "Click to view the data"
+                      }
+                    >
                       <button
                         disabled={data.Data.length === 0}
                         className="btn btn-warning"
@@ -187,35 +204,89 @@ const App = () => {
         <Modal.Body>
           <div>
             <h2>Data Table</h2>
-            <Table striped bordered hover>
-              <thead>
-                <tr>
-                  {data.length > 0 &&
-                    Object.keys(data[0]).map((key) => <th style={{ width: "150px" }} key={key}>{key}</th>)}
-                </tr>
-              </thead>
-              <tbody>
-                {data.length > 0 ? (
-                  data.map((item, index) => (
-                    <tr key={index}>
-                      {Object.values(item).map((value, index) => (
-                        <td key={index}>{value}</td>
-                      ))}
-                    </tr>
-                  ))
-                ) : (
+            {isOlderFashion && (
+              <Table striped bordered hover>
+                <thead>
                   <tr>
-                    <td colSpan={Object.keys(data?.[0] || {}).length || 1}>
-                      No data available
-                    </td>
+                    {data.length > 0 &&
+                      Object.keys(data[0]).map((key) => (
+                        <th style={{ width: "150px" }} key={key}>
+                          {key}
+                        </th>
+                      ))}
                   </tr>
+                </thead>
+                <tbody>
+                  {data.length > 0 ? (
+                    data.map((item, index) => (
+                      <tr key={index}>
+                        {Object.values(item).map((value, index) => (
+                          <td key={index}>{value}</td>
+                        ))}
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={Object.keys(data?.[0] || {}).length || 1}>
+                        No data available
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </Table>
+            )}
+            {!isOlderFashion && (
+              <div>
+                <div className="d-flex justify-content-center flex-wrap">
+                  {Object.keys(data).map((section, index) => (
+                    <Button
+                      className="mx-2 my-1 d-block"
+                      variant="warning"
+                      key={index}
+                      onClick={() => handleSectionToggle(section)}
+                      style={{ textTransform: "capitalize" }}
+                    >
+                      {section}
+                    </Button>
+                  ))}
+                </div>
+                {activeSection && data[activeSection].length > 0 ? (
+                  <Table striped bordered hover>
+                    <thead>
+                      <tr>
+                        {Object.keys(data[activeSection][0]).map((key) => (
+                          <th key={key}>{key}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {data[activeSection].map((item, index) => (
+                        <tr key={index}>
+                          {Object.values(item).map((value, index) => (
+                            <td key={index}>{value}</td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </Table>
+                ) : (
+                  <div>
+                    {activeSection && data[activeSection].length === 0 && (
+                      <Table striped bordered hover>
+                        <tr>
+                      <td colSpan={Object.keys(data?.[0] || {}).length || 1}>
+                        No data available
+                      </td>
+                    </tr>
+                      </Table>
+                    )}
+                  </div>  
                 )}
-              </tbody>
-            </Table>
+              </div>
+            )}
           </div>
         </Modal.Body>
       </Modal>
-      {/* Add ToastContainer to show toast messages */}
       <ToastContainer
         position="top-right"
         autoClose={3000}
