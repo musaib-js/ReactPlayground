@@ -155,8 +155,10 @@ const App = () => {
                     <td>{data.pos_name}</td>
                     <td>{data.user}</td>
                     <td>{data.report_name}</td>
-                    <Tooltip id="my-tooltip" />
-                    <td>
+                    <td
+                     data-bs-toggle="tooltip"
+                     data-bs-placement="top"
+                     title={data.Data.length === 0 ? "No data available" : "Click to view the data"}>
                       <button
                         disabled={data.Data.length === 0}
                         className="btn btn-warning"
@@ -165,11 +167,10 @@ const App = () => {
                           setShow(true);
                           setDate(data.Date);
                         }}
-                        data-tooltip-content={data.Data.length === 0 ? "No data available" : "Click to view the data"}
-                        data-tooltip-id="my-tooltip"
                       >
                         Show Data
                       </button>
+                      <Tooltip id={index} />
                     </td>
                   </tr>
                 ))}
