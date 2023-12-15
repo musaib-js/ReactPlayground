@@ -4,11 +4,13 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Dropdown from "./Dropdown";
 import Modal from "react-bootstrap/Modal";
-import { Table, Button } from "react-bootstrap";
+import { Table, Button, Spinner } from "react-bootstrap";
+import { Pagination } from "react-bootstrap";
 import "react-tooltip/dist/react-tooltip.css";
 import { Tooltip } from "react-tooltip";
 
 const App = () => {
+  const [loading, setLoading] = useState(false);
   const [posList, setPosList] = useState([]);
   const [userList, setUserList] = useState([]);
   const [reportType, setReportType] = useState("");
@@ -21,6 +23,8 @@ const App = () => {
   const [date, setDate] = useState("");
   const [activeSection, setActiveSection] = useState(null);
   const [isOlderFashion, setIsOlderFashion] = useState(true);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
 
   const handleSectionToggle = (section) => {
     setActiveSection(section === activeSection ? null : section);
@@ -57,15 +61,27 @@ const App = () => {
     setPos(event.target.value);
   };
 
+  const handlePageChange = (page) => {
+    setPage(page);
+  };
+
   useEffect(() => {
     if (data) {
       setIsOlderFashion(Array.isArray(data));
     }
   }, [data]);
+
+  useEffect(() => {
+    if (showTable) {
+      handleShowTable();
+    }
+  }, [page, showTable]);
   const handleShowTable = async () => {
+    setLoading(true);
     try {
       if (!reportType || !pos) {
         toast.error("Please select Report type and POS.");
+        setLoading(false);
         return;
       }
 
@@ -75,14 +91,19 @@ const App = () => {
           report_name: reportType,
           user: user,
           POS: pos,
+          page: page,
+          limit: 10,
         }
       );
 
-      setTableData(response.data || []);
+      setTableData(response.data.data || []);
       setShowTable(true);
+      setTotalPages(response.data.total_pages);
+      setLoading(false);
     } catch (error) {
       toast.error("Error fetching data from the API.");
       console.error("Error fetching data from the API.", error);
+      setLoading(false);
     }
   };
 
@@ -91,7 +112,6 @@ const App = () => {
     { label: "Product", value: "product" },
     { label: "Sales", value: "sales" },
   ];
-  console.log("isOlderFashion", isOlderFashion);
   return (
     <div className="container">
       <h1 className="my-4 text-center">POS Data Preview</h1>
@@ -147,7 +167,7 @@ const App = () => {
       >
         Show Table
       </button>
-      {showTable && (
+      {showTable && loading === false && (
         <div className="row">
           <div className="col-md-12 table-responsive">
             <table className="table table-striped">
@@ -194,10 +214,46 @@ const App = () => {
               </tbody>
             </table>
           </div>
+          <div className="d-flex justify-content-center align-items-center">
+            <Pagination>
+              <Pagination.First
+                onClick={() => handlePageChange(1)}
+                disabled={page === 1}
+              />
+              <Pagination.Prev
+                onClick={() => handlePageChange(page - 1)}
+                disabled={page === 1}
+              />
+              <Pagination.Item disabled>
+                Page {page} of {totalPages}
+              </Pagination.Item>
+              <Pagination.Next
+                onClick={() => handlePageChange(page + 1)}
+                disabled={page === totalPages}
+              />
+              <Pagination.Last
+                onClick={() => handlePageChange(totalPages)}
+                disabled={page === totalPages}
+              />
+            </Pagination>
+          </div>
+        </div>
+      )
+      }
+      {loading && (
+        <div className="d-flex justify-content-center align-items-center">
+          <Spinner animation="border" variant="warning" size="lg" />
         </div>
       )}
 
-      <Modal show={show} fullscreen={true} onHide={() => setShow(false)}>
+      <Modal
+        show={show}
+        fullscreen={true}
+        onHide={() => {
+          setShow(false);
+          setActiveSection(null);
+        }}
+      >
         <Modal.Header closeButton>
           <Modal.Title>Data for {date}</Modal.Title>
         </Modal.Header>
@@ -272,15 +328,17 @@ const App = () => {
                 ) : (
                   <div>
                     {activeSection && data[activeSection].length === 0 && (
-                      <Table striped bordered hover>
+                      <Table>
                         <tr>
-                      <td colSpan={Object.keys(data?.[0] || {}).length || 1}>
-                        No data available
-                      </td>
-                    </tr>
+                          <td
+                            colSpan={Object.keys(data?.[0] || {}).length || 1}
+                          >
+                            No data available
+                          </td>
+                        </tr>
                       </Table>
                     )}
-                  </div>  
+                  </div>
                 )}
               </div>
             )}
