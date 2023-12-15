@@ -5,6 +5,8 @@ import "react-toastify/dist/ReactToastify.css";
 import Dropdown from "./Dropdown";
 import Modal from "react-bootstrap/Modal";
 import { Table } from "react-bootstrap";
+import 'react-tooltip/dist/react-tooltip.css'
+import { Tooltip } from 'react-tooltip'
 
 const App = () => {
   const [posList, setPosList] = useState([]);
@@ -82,13 +84,21 @@ const App = () => {
     <div className="container">
       <h1 className="my-4 text-center">POS Data Preview</h1>
       <div className="d-flex justify-content-center align-items-start">
-        <div className="col-md-4 mb-3 mx-2">
-          <label htmlFor="reportType">Report type:</label>
-          <Dropdown
-            id="reportType"
-            options={reportTypeOptions}
-            onChange={handleReportTypeChange}
-          />
+      <div className="col-md-4 mb-3 mx-2">
+          <label htmlFor="user">Select a User:</label>
+          <select
+            className="form-select"
+            id="user"
+            onChange={(e) => setUser(e.target.value)}
+            value={user}
+          >
+            <option value="">Select</option>
+            {userList.map((user) => (
+              <option key={user._id} value={user.credentials.username}>
+                {user.credentials.username}
+              </option>
+            ))}
+          </select>
         </div>
         <div className="col-md-4 mb-3">
           <label htmlFor="pos">Select a POS:</label>
@@ -111,20 +121,12 @@ const App = () => {
           </select>
         </div>
         <div className="col-md-4 mb-3 mx-2">
-          <label htmlFor="user">Select a User:</label>
-          <select
-            className="form-select"
-            id="user"
-            onChange={(e) => setUser(e.target.value)}
-            value={user}
-          >
-            <option value="">Select</option>
-            {userList.map((user) => (
-              <option key={user._id} value={user.credentials.username}>
-                {user.credentials.username}
-              </option>
-            ))}
-          </select>
+          <label htmlFor="reportType">Report type:</label>
+          <Dropdown
+            id="reportType"
+            options={reportTypeOptions}
+            onChange={handleReportTypeChange}
+          />
         </div>
       </div>
       <button
@@ -153,14 +155,18 @@ const App = () => {
                     <td>{data.pos_name}</td>
                     <td>{data.user}</td>
                     <td>{data.report_name}</td>
+                    <Tooltip id="my-tooltip" />
                     <td>
                       <button
+                        disabled={data.Data.length === 0}
                         className="btn btn-warning"
                         onClick={() => {
                           setData(data.Data);
                           setShow(true);
                           setDate(data.Date);
                         }}
+                        data-tooltip-content={data.Data.length === 0 ? "No data available" : "Click to view the data"}
+                        data-tooltip-id="my-tooltip"
                       >
                         Show Data
                       </button>
