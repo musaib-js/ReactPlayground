@@ -111,6 +111,7 @@ const App = () => {
     { label: "Labor", value: "labor" },
     { label: "Product", value: "product" },
     { label: "Sales", value: "sales" },
+    { label: "Discount", value: "discount" },
   ];
   return (
     <div className="container">
