@@ -112,6 +112,8 @@ const App = () => {
     { label: "Product", value: "product" },
     { label: "Sales", value: "sales" },
     { label: "Discount", value: "discount" },
+    { label: "Deposit", value: "deposit" },
+
   ];
   return (
     <div className="container">
@@ -184,7 +186,7 @@ const App = () => {
               <tbody>
                 {tableData.map((data, index) => (
                   <tr key={index}>
-                    <td>{data.Date}</td>
+                    <td>{data.report_date}</td>
                     <td>{data.pos_name}</td>
                     <td>{data.user}</td>
                     <td>{data.report_name}</td>
@@ -192,18 +194,18 @@ const App = () => {
                       data-bs-toggle="tooltip"
                       data-bs-placement="top"
                       title={
-                        data.Data.length === 0
+                        data.raw_output.length === 0
                           ? "No data available"
                           : "Click to view the data"
                       }
                     >
                       <button
-                        disabled={data.Data.length === 0}
+                        disabled={data.raw_output.length === 0}
                         className="btn btn-warning"
                         onClick={() => {
-                          setData(data.Data);
+                          setData(data.raw_output);
                           setShow(true);
-                          setDate(data.Date);
+                          setDate(data.report_date);
                         }}
                       >
                         Show Data
